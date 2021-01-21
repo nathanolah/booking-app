@@ -7,7 +7,11 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const dataService = require('./modules/data-service.js'); 
 
-const myData = dataService(`mongodb+srv://nolah:prj123@cluster0.qbhut.mongodb.net/simple-api-users?retryWrites=true&w=majority`);
+// mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority
+
+// const myData = dataService(`mongodb+srv://nolah:prj123@cluster0.qbhut.mongodb.net/simple-api-users?retryWrites=true&w=majority`);
+
+const myData = dataService(`mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`);
 const app = express();
 
 app.use(cors());
