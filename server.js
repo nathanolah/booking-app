@@ -54,7 +54,7 @@ app.delete(`/api/barbers/:id`, (req, res) => {
 
 
 // TO DO : 
-// - CREATE AN ACCOUNT CRUD OPERATIONS, THEN AN ACCOUNT CREATION AND LOGIN
+// - CREATE THE ACCOUNT CRUD OPERATIONS, THEN THE ACCOUNT CREATION AND LOGIN
 
 /** Initialize the database service and start the server **/ 
 
