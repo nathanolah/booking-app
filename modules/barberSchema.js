@@ -16,19 +16,9 @@ const barberSchema = new Schema({
     // paymentID: { type: Number },
     // scheduleID: { type: Number }
 
-    // title: String,
-    // postDate: Date,
-    // featuredImage: String,
-    // post: String,
-    // postedBy: String,
-    // comments: [{ author: String, comment: String, date: Date }],
-    // category: String,
-    // tags: [String],
-    // isPrivate: Boolean,
-    // views: Number
 });
 
-// const barberModel = mongoose.model('Barbers', barberSchema);
-// module.exports = barberModel;
+const barberModel = mongoose.model('Barbers', barberSchema);
+module.exports = barberModel;
 
-module.exports = barberSchema;
+//module.exports = barberSchema;
