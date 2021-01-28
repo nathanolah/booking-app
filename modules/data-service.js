@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise; // Added to get around the deprecation warning: "Mongoose: promise (mongoose's default promise library) is deprecated"
 
-barberSchema = require('./barberSchema.js');
+//barberSchema = require('./models/barberSchema.js');
 
 // Receives the mongoDB connection string
 module.exports = (connectionString) => {
