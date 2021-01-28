@@ -26,6 +26,12 @@ router.get('/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
+// Account Logout (End Session)
+router.get('/logout', (req, res) => {
+    // DESTORY SESSION
+    // REDIRECT
+});
+
 // Account Login
 router.post('/login', (req, res) => {
     const errorMessage = [];
@@ -57,7 +63,7 @@ router.post('/login', (req, res) => {
                     bcrypt.compare(req.body.password, account.password)
                         .then((isMatched) => {
                             if (isMatched == true) {
-                                
+
                                 //CREATE A SESSION FOR THIS ACCOUNT
                                 res.json(`Account: ${ account._id } has logged in`);
 
@@ -137,64 +143,83 @@ router.post('/signup', (req, res) => {
 
 });
 
-// Update account by id
-router.put('/:id', (req, res) => {
+// Update account by id (NOT FINISHED)
+router.put('/update/:id', (req, res) => {
     const errorMessage = [];
-    const { firstName, lastName, email, password, cpassword } = req.body;
-    
+
+    //const { firstName, lastName, email, password, cpassword } = req.body;
+    const { firstName, lastName } = req.body;
+
     if (firstName == "" || lastName == "") {
         errorMessage.push('You must enter a full name');
     }
-    if (email == "") {
-        errorMessage.push('You must enter an email');
-    }
-    if (password == "" || cpassword == "") {
-        errorMessage.push('You must enter a password');
-    }
-    if (password.length < 6 || password.length > 12 && cpassword.length < 6 || cpassword.length > 12) {
-        errorMessage.push('Password must 6 to 12 characters long');
-    }
-    if (!password.match(/^(?=.*\d)(?=.*[a-z]).{6,12}$/) && !cpassword.match(/^(?=.*\d)(?=.*[a-z]).{6,12}$/)) {
-        errorMessage.push('Password must contain letters and numbers');
-    }
-    if (password != cpassword) {
-        errorMessage.push('Passwords do not match');
-    }
+
+    // if (email == "") {
+    //     errorMessage.push('You must enter an email');
+    // }
+
+    // // Password Validation
+    // if (password == "" || cpassword == "") {
+    //     errorMessage.push('You must enter a password');
+    // }
+    // if (password.length < 6 || password.length > 12 && cpassword.length < 6 || cpassword.length > 12) {
+    //     errorMessage.push('Password must 6 to 12 characters long');
+    // }
+    // if (!password.match(/^(?=.*\d)(?=.*[a-z]).{6,12}$/) && !cpassword.match(/^(?=.*\d)(?=.*[a-z]).{6,12}$/)) {
+    //     errorMessage.push('Password must contain letters and numbers');
+    // }
+    // if (password != cpassword) {
+    //     errorMessage.push('Passwords do not match');
+    // }
+
 
     if (errorMessage.length > 0) {
         res.json(errorMessage);
-
+        
     } else {
-
-        // Check for an existing email
-        accountModel.findOne({email: req.body.email})
+        accountModel.findOne({_id: req.body.id})
             .then(account => {
-                if (account != null) {
-                    res.json(`Email already exists`);
 
-                } else {
-                    console.log('else statement');
-
-                    // Create new account object to update (this is to encrypt the new password)
-                    const editAccount = {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email, // EMAIL NOT CHANGING
-                        password: password // TEST THIS
-                    }
-            
-                    const updatedAccount = new accountModel(editAccount);
-            
-                    accountModel.updateOne({_id: req.params.id}, {$set: updatedAccount})
-                        .then(res.json(`Account ${ req.params.id } successfully updated`))
-                        .catch(err => res.json(err));
-
-
-                    
+                const editAccount = {
+                    firstName: firstName,
+                    lastName: lastName
                 }
+
+                const updatedAccount = new accountModel(editAccount);
+
+                accountModel.updateOne({_id: req.params.id}, {$set: updatedAccount})
+                    .then(res.json(`Account ${ req.params.id } successfully updated`))
+                    .catch(err => res.json(err));
             })
             .catch(err => res.json(err));
 
+        // // Check for an existing email
+        // accountModel.findOne({email: req.body.email})
+        //     .then(email => {
+        //         if (email != null) {
+        //             res.json(`Email already exists`);
+                    
+        //         } else {
+
+        //             // Create new account object to update (this is to encrypt the new password)
+        //             const editAccount = {
+        //                 firstName: firstName,
+        //                 lastName: lastName,
+        //                 email: email, // EMAIL NOT CHANGING
+        //                 password: password // TEST THIS
+        //             }
+            
+        //             const updatedAccount = new accountModel(editAccount);
+            
+        //             accountModel.updateOne({_id: req.params.id}, {$set: updatedAccount})
+        //                 .then(res.json(`Account ${ req.params.id } successfully updated`))
+        //                 .catch(err => res.json(err));
+
+
+                    
+        //         }
+        //     })
+        //     .catch(err => res.json(err));
 
     }
 

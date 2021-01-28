@@ -54,5 +54,3 @@ accountSchema.pre('save', function(next) {
 
 const accountModel = mongoose.model('Accounts', accountSchema);
 module.exports = accountModel;
-
-//module.exports = accountSchema;
