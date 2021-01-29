@@ -20,10 +20,12 @@ const HTTP_PORT = process.env.PORT || 8080;
 
 const barberController = require('./modules/controllers/barber');
 const accountController = require('./modules/controllers/account');
+const barberShopController = require('./modules/controllers/barberShop');
 
 // Controllers
 app.use('/api/barbers', barberController);
 app.use('/api/accounts', accountController);
+app.use('/api/barberShops', barberShopController);
 
 // Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
