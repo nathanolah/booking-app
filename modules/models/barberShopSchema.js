@@ -3,7 +3,13 @@ let Schema = mongoose.Schema;
 
 const barberShopSchema = new Schema({
     barberShopName: String,
-    barberShopQueue: [{ customerId: String }],
+    phoneNumber: String,
+    barbers: [{
+        barberId: String
+    }],
+    barberShopQueue: [{ 
+        customerId: String
+    }],
 
     // barberID: { type: Number },
     // firstName: { type: String },
