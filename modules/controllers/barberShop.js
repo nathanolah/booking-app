@@ -3,7 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise; // Added to get around the deprecation warning: "Mongoose: promise (mongoose's default promise library) is deprecated"
 
-const queue = require('../models/queue');
 const barberShopModel = require('../models/barberShopSchema');
 
 // Add new barber shop
@@ -22,8 +21,6 @@ router.post('/', (req, res) => {
             }
         });
     }
-
-
 });
 
 // Get all barber shops
@@ -34,25 +31,52 @@ router.get('/', (req, res) => {
 });
 
 // Get barber shop by id
+router.get('/:id', (req, res) => {
+    barberShopModel.findOne({_id: req.params.id}).exec()
+        .then(shop => res.json(shop))
+        .catch(err => res.json(err));
+
+});
+
+// Update barber shop by id
+router.put('/:id', (req, res) => {
+    const { barberShopName } = req.body;
+
+    if (barberShopName == "") {
+        res.json(`You must enter a shop name`);
+    } else {
+        barberShopModel.updateOne({_id: req.params.id}, {$set: req.body})
+            .then(res.json(`Shop ${ req.params.id } successfully updated`))
+            .catch(err => res.json(err));
+    }
+});
+
+// Delete barber shop by id
+router.delete('/:id', (req, res) => {
+    barberShopModel.deleteOne({_id: req.params.id}).exec()
+        .then(res.json(`Shop: ${ req.params.id } successfully deleted`))
+        .catch(err => res.json(err));
+});
+
+
+/* Barber Shop Queue Routes */
 
 // Get barber shop queue by id
 router.get('/queue/:id', (req, res) => {
     barberShopModel.getBarberShopQueue(req.params.id, res);
-    //res.json(queue.getAllCustomers(req.params.id));
 });
-
 
 // Add customer to barber shop queue by id
 router.post('/queue/:id', (req, res) => {
     barberShopModel.addCustomerToQueue(req.params.id, req.body, res);
-
-//     let customer = "newCustomer";
-
-//     queue.addCustomerToQueue(id, customer);
 });
 
-
 // Remove from barber shop queue by id
+router.delete('/queue/:id', (req, res) => {
+    // req.params.id is the id of the shop
+    // req.body contains the customer details
+    barberShopModel.deleteCustomerFromQueue(req.params.id, req.body, res); 
+});
 
 
 module.exports = router;

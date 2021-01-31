@@ -16,30 +16,37 @@ const barberShopSchema = new Schema({
 
 });
 
-barberShopSchema.statics.addCustomerToQueue = (barberShopId, customerId, res) => {
+// Delete customer from queue
+barberShopSchema.statics.deleteCustomerFromQueue = (barberShopID, customer, res) => {
+    barberShopModel.updateOne({_id: barberShopID}, {$pull: {"barberShopQueue": {"customerId": customer.customerId}}}, {safe:true, multi:true}, function(err, obj) {
+        if (err) {
+            res.json(err);
+        } else {
+            res.json(`Customer: ${ customer.customerId } removed from queue`);
+        }
+    }); 
+}
+
+// Add customer to queue
+barberShopSchema.statics.addCustomerToQueue = (barberShopId, customer, res) => {
     barberShopModel.findOne({_id: barberShopId}).exec((err, barberShop) => {
         if (err) {
             res.json(err);
+        } else {
+            barberShop.barberShopQueue.push(customer);
+            barberShop.save();
+
+            // customer is the object that holds the customer's details
+            res.json(`Customer: ${ customer.customerId } was added to queue`);
         }
-
-        barberShop.barberShopQueue.push(customerId);
-        barberShop.save();
-
     });
-
-        // .then(barberShop => {
-            
-        // })
-        // .catch(err => res.json(err));
 }
 
+// Get all customers in queue
 barberShopSchema.statics.getBarberShopQueue = (barberShopId, res) => {
-    console.log('testing')
     barberShopModel.findOne({_id: barberShopId})
         .then(shop => { res.json(shop.barberShopQueue) })
         .catch(err => { res.json(err) });
-        // .then(shop => console.log(shop.barberShopQueue))
-        // .catch(err => console.log(err));
 }
 
 
