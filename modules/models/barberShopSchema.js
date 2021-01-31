@@ -55,6 +55,5 @@ barberShopSchema.statics.getBarberShopQueue = (barberShopId, res) => {
         .catch(err => { res.json(err) });
 }
 
-
 const barberShopModel = mongoose.model('BarberShops', barberShopSchema);
 module.exports = barberShopModel;
