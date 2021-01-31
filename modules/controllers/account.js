@@ -1,4 +1,4 @@
-
+// account.js
 
 const express = require('express');
 const router = express.Router();
@@ -175,7 +175,7 @@ router.put('/update/:id', (req, res) => {
 
     if (errorMessage.length > 0) {
         res.json(errorMessage);
-        
+
     } else {
         accountModel.findOne({_id: req.body.id})
             .then(account => {
