@@ -48,7 +48,7 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
     const { firstName, lastName } = req.body;
 
-    if (firstName.length == "" || lastName.length == "") {
+    if (firstName == null || lastName == null || firstName.length == "" || lastName.length == "") {
         res.json('You must enter a full name');
 
     } else {

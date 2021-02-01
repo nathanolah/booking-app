@@ -32,6 +32,39 @@ router.post('/', (req, res) => {
 
 });
 
+// Get all Customers
+router.get('/', (req, res) => {
+    customerModel.find().exec()
+        .then(customers => res.json(customers))
+        .catch(err => res.json(err));
+});
+
+// Get customer by id
+router.get('/:id', (req, res) => {
+    customerModel.findOne({_id: req.params.id}).exec()
+        .then(customers => res.json(customers))
+        .catch(err => res.json(err));
+});
+
+// Update barber by id
+router.put('/:id', (req, res) => {
+    const { firstName, lastName, phoneNumber, email } = req.body;
+
+    if (firstName == null || lastName == null || firstName.length == "" || lastName.length == "") {
+        res.json('You must enter a full name');
+    } else if(phoneNumber == null || phoneNumber.length == ""){
+        res.json("Please enter a valid phone number")
+    } else if(email == null || email.length == ""){
+        res.json("Please enter a valid phone number")
+    }
+    else {
+        customerModel.updateOne({_id: req.params.id}, {$set: req.body})
+            .then(res.json(`customer ${ req.params.id } successfully updated`))
+            .catch(err => res.json(err));
+    }
+
+});
+
 module.exports = router;
 
 

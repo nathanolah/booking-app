@@ -36,6 +36,7 @@ mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: 
         console.log(`Connected to mongoDB`); // If promise is fulfilled
     })
     .catch(err => console.log(`Error ${ err }`)); // If the promise is rejected
+mongoose.set('useCreateIndex', true);
 
 /** Initialize the database service and start the server **/ 
 app.listen(HTTP_PORT, () => {
