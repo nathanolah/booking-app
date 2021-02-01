@@ -24,12 +24,14 @@ const barberController = require('./modules/controllers/barber');
 const accountController = require('./modules/controllers/account');
 const barberShopController = require('./modules/controllers/barberShop');
 const customerController = require('./modules/controllers/customer');
+const appointmentController = require('./modules/controllers/appointment')
 
 // Controllers
 app.use('/api/barbers', barberController);
 app.use('/api/accounts', accountController);
 app.use('/api/barberShops', barberShopController);
 app.use('/api/customers', customerController);
+app.use('/api/appointments', appointmentController);
 
 // Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
 mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
