@@ -10,7 +10,7 @@ const appointmentSchema = new Schema({
         default: Date.now()
     },
     custID: {
-        type: Schema.ObjectId, ref: "Customer",
+        type: Schema.ObjectId, ref: "Customers",
         required: true        
     },
     barberID: {
