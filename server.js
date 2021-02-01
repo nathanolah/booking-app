@@ -10,7 +10,8 @@ const mongoose = require('mongoose');
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
 
-const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`; //temporary
+//connection string if needed
+//const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`; 
 
 const app = express();
 
@@ -31,7 +32,7 @@ app.use('/api/barberShops', barberShopController);
 app.use('/api/customers', customerController);
 
 // Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
-mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`Connected to mongoDB`); // If promise is fulfilled
     })
