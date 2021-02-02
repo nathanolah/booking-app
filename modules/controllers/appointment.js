@@ -23,14 +23,39 @@ router.post('/', (req, res) => {
     let isActiveTemp = true;
     if(temp.isActive == "false"){
         isActiveTemp = false; 
-    }  
-
-         
-
+    }
     
+    appointmentModel.countDocuments({ $or:
+            [{
+                endDate : { "$gte": new Date(realDateStart)}, startDate:{"$lte": new Date(realDateEnd)}
+            }]
+        }).then(count => {
+                if(count > 0){
+                    res.json('Double booked, pick a different time');
+                }else{
+                    let newAppointment = new appointmentModel();
+                    newAppointment.custID = custID;
+                    newAppointment.startDate = realDateStart;
+                    newAppointment.endDate = realDateEnd;
+                    newAppointment.barberID = barberID;
+                    newAppointment.isActive = isActiveTemp;
+    //TO DO - ensure a barber can't get double booked
+                    newAppointment.save((err) => {
+                    if (err) {
+                        res.json(err);
+                    } else {
+                        res.json(`New appointment: ${ newAppointment._id } was added to collection`);
+                    }})
+                }
+            })
+        
 
-       
-    
+    /*overLappingTimes = count(realDateStart, realDateEnd);
+    console.log(overLappingTimes);
+
+    if (overLappingTimes > 0){
+        res.json('Double booked, pick a different time')
+    }else{     
     //putting values into mongoDB
     let newAppointment = new appointmentModel();
     newAppointment.custID = custID;
@@ -46,7 +71,7 @@ router.post('/', (req, res) => {
             res.json(`New appointment: ${ newAppointment._id } was added to collection`);
         }});
         
-    
+    }*/
 
 });
 
