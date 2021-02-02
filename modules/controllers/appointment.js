@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
     const temp = req.body;
     //adding customer and barber IDs to appointment
     let custID = new mongoose.Types.ObjectId(temp.custID);
-    let barberID = new mongoose.Types.ObjectId(temp.barberID);
+    let barbID = new mongoose.Types.ObjectId(temp.barberID);
     //adding date to appointment 
     let dateStr = temp.date.split(" ");
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
@@ -25,11 +25,19 @@ router.post('/', (req, res) => {
         isActiveTemp = false; 
     }
     
-    appointmentModel.countDocuments({ $or:
-            [{
-                endDate : { "$gte": new Date(realDateStart)}, startDate:{"$lte": new Date(realDateEnd)}
-            }]
-        }).then(count => {
+    appointmentModel.countDocuments({ 
+        $and:[{
+            
+            barberID: barbID,
+            $or:
+                [
+                    {
+                            endDate : { "$gte": new Date(realDateStart)}, startDate:{"$lte": new Date(realDateEnd)}
+                    }
+                ]
+                
+        }]}
+        ).then(count => {
                 if(count > 0){
                     res.json('Double booked, pick a different time');
                 }else{
@@ -37,9 +45,8 @@ router.post('/', (req, res) => {
                     newAppointment.custID = custID;
                     newAppointment.startDate = realDateStart;
                     newAppointment.endDate = realDateEnd;
-                    newAppointment.barberID = barberID;
-                    newAppointment.isActive = isActiveTemp;
-    //TO DO - ensure a barber can't get double booked
+                    newAppointment.barberID = barbID;
+                    newAppointment.isActive = isActiveTemp;    
                     newAppointment.save((err) => {
                     if (err) {
                         res.json(err);
