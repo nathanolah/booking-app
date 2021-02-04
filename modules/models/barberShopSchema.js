@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
+const barberModel = require('../models/barberSchema'); //not sure if needed
+
 const barberShopSchema = new Schema({
     barberShopName: String,
     phoneNumber: String,
-    barbers: [{
-        barberId: String
+    barbers: [{        
+        type: Schema.ObjectId, ref: "Barbers",
     }],
     barberShopQueue: [{ 
         customerId: String

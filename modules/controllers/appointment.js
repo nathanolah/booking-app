@@ -17,13 +17,9 @@ router.post('/', (req, res) => {
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
     
     let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000)) //removing utc offset
-    let realDateEnd = new Date(realDateStart.getTime() + 45*60000)
+    let realDateEnd = new Date(realDateStart.getTime() + 45*60000)    
     
-    
-    let isActiveTemp = true;
-    //if(temp.isActive == "false"){
-    //    isActiveTemp = false; 
-    //}
+    let isActiveTemp = true;    
     
     appointmentModel.countDocuments({ 
         $and:[{
@@ -83,32 +79,23 @@ router.put('/:id', (req, res) => {
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
     
     let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000)) //removing utc offset
-    let realDateEnd = new Date(realDateStart.getTime() + 45*60000)
-    
+    let realDateEnd = new Date(realDateStart.getTime() + 45*60000)    
     
 
     appointmentModel.countDocuments({ 
-        $and:[{
-            
+        $and:[{            
             barberID: barbID,
             $or:
                 [
                     {
                             endDate : { "$gte": new Date(realDateStart)}, startDate:{"$lte": new Date(realDateEnd)}
                     }
-                ]
-                
+                ]                
         }]}
         ).then(count => {
                 if(count > 0){
                     res.json('Double booked, pick a different time');
-                }else{
-                    //let newAppointment = new appointmentModel();
-                    //newAppointment.custID = custID;
-                    //newAppointment.startDate = realDateStart;
-                    //newAppointment.endDate = realDateEnd;
-                    //newAppointment.barberID = barbID;
-                    //newAppointment.isActive = isActiveTemp;    
+                }else{                     
                 appointmentModel.updateOne({_id: req.params.id}, {$set: {startDate: realDateStart}, endDate:realDateEnd, custID: ncustID, barberID: barbID})
                     .then(res.json(`Appointment ${ req.params.id } successfully updated`))
                     .catch(err => res.json(err));
