@@ -5,7 +5,11 @@ const customerModel = require('../models/customerSchema'); //not sure if needed
 const barberModel = require('../models/barberSchema'); //not sure if needed
 
 const appointmentSchema = new Schema({   
-    date: {
+    startDate: {
+        type: Date,
+        default: Date.now()
+    },
+    endDate:{
         type: Date,
         default: Date.now()
     },
