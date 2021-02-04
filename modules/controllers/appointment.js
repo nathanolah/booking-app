@@ -89,4 +89,10 @@ router.get('/:id', (req, res) => {
 
 });
 
+router.get('/', (req, res) => {
+    appointmentModel.find().populate('custID').populate('barberID').exec()
+        .then(appointments => res.json(appointments))
+        .catch(err => res.json(err));
+});
+
 module.exports = router;
