@@ -5,7 +5,8 @@ const barberShopSchema = new Schema({
     barberShopName: String,
     phoneNumber: String,
     barbers: [{
-        barberId: String
+        type: Schema.ObjectId, ref: 'Barbers',
+        require: true
     }],
     barberShopQueue: [{ 
         customerId: String
