@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
+const barberModel = require('../models/barberSchema'); //not sure if needed
+
 const barberShopSchema = new Schema({
     barberShopName: String,
     phoneNumber: String,
-    barbers: [{
-        type: Schema.ObjectId, ref: 'Barbers',
-        require: true
+
+    barbers: [{        
+        type: Schema.ObjectId, ref: "Barbers",
     }],
     barberShopQueue: [{ 
         customerId: String
@@ -55,7 +57,6 @@ barberShopSchema.statics.getBarberShopQueue = (barberShopId, res) => {
         .then(shop => { res.json(shop.barberShopQueue) })
         .catch(err => { res.json(err) });
 }
-
 
 const barberShopModel = mongoose.model('BarberShops', barberShopSchema);
 module.exports = barberShopModel;
