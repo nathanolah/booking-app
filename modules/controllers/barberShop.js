@@ -11,7 +11,8 @@ const barberShopModel = require('../models/barberShopSchema');
 
 // Add new barber shop
 router.post('/', (req, res) => {
-    const { barberShopName} = req.body;
+  
+    const { barberShopName } = req.body;
 
     if (barberShopName.length == "") {
         res.json(`You must enter a shop name`);
@@ -65,6 +66,50 @@ router.delete('/:id', (req, res) => {
 
 /* Routes that refer to the barbers of the shop */
 
+// Add barber to shop (id refers to the shop id)
+router.post('/barber/:id', (req, res) => {
+
+    const tempId = req.body;
+    //console.log(req.body);
+
+    let barberId = mongoose.Types.ObjectId(tempId.newId);
+
+    console.log(barberId);
+    barberShopModel.updateOne({_id: req.params.id}, {$push: {'barbers': barberId}}, function(err, result) {
+        if (err) {
+            res.json(err)
+        } else {
+            res.json(`Added new barber to the barber list`);
+        }
+    });
+    
+    // barberShopModel.updateOne({_id: req.params.id}, {$push:{"queue": newID}}, 
+    // function(err, result) {
+    //     if (err) { console.log(err); res.send(err); return;}
+    //     else{
+    //         res.json('worked');
+    //     }
+        
+    //   });
+});
+
+// Delete barber from shop
+router.delete('/barber', (req, res) => {
+
+});
+
+// Get all barbers from shop (id is shop id)
+router.get('/barber/:id', (req, res) => {
+    barberShopModel.findOne({_id: req.params.id}).populate('barbers').exec()
+    .then(barberShops => res.json(barberShops))
+    .catch(err => res.json(err));
+
+});
+
+// Get barber by id from shop
+router.get('/barber/:id', (req, res) => {
+
+=======
 // Add barber to shop
 router.put('/addBarber/:id', (req, res) => {
     const {barbID} = req.body;

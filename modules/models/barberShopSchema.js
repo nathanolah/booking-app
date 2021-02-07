@@ -6,6 +6,7 @@ const barberModel = require('../models/barberSchema'); //not sure if needed
 const barberShopSchema = new Schema({
     barberShopName: String,
     phoneNumber: String,
+
     barbers: [{        
         type: Schema.ObjectId, ref: "Barbers",
     }],

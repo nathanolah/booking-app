@@ -6,6 +6,10 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+
+// Stores the session in the database
+const MongoStore = require('connect-mongo')(session);
 
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
@@ -17,6 +21,15 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(session({
+    secret: `${process.env.SESSION_KEY}`,
+    resave: false,
+    saveUninitialized: true, 
+    // cookie: { secure: true },
+
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: { maxAge: 180 * 80 * 1000 }
+}));
 
 const HTTP_PORT = process.env.PORT || 8080;
 
@@ -37,7 +50,7 @@ app.use('/api/appointments', appointmentController);
 app.use('/api/schedules', scheduleController);
 app.use('/api/reviews', reviewController);
 
-// Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
+// Promise operation asynchronous 
 mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`Connected to mongoDB`); // If promise is fulfilled
