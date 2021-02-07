@@ -2,19 +2,21 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 const barberSchema = new Schema({
-    barberID: Number,
-    firstName: String,
-    lastName: String
+    
+   
 
 
-    // barberID: { type: Number },
-    // firstName: { type: String },
-    // lastName: { type: String },
-    // email: { type: String, unique: true },
-    // //dateCreated: { type: Date, default: Date.now() },
+    
+     firstName: { type: String },
+     lastName: { type: String },
+     email: { type: String, unique: true },
+     dateCreated: { type: Date, default: Date.now() },
     // isManager: { type: Boolean },
-    // paymentID: { type: Number },
-    // scheduleID: { type: Number }
+     phoneNumber: { type: String },
+     scheduleID: { type: Schema.ObjectId, ref: 'Schedules' },
+     reviewID:[{
+         type: Schema.ObjectId, ref: 'Reviews'
+     }]
 
 });
 
