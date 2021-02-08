@@ -14,13 +14,11 @@ const barberSchema = new Schema({
     // isManager: { type: Boolean },
      phoneNumber: { type: String },
      schedules: [{
-        workDate: Date, 
-        startTime: Date, 
-        endTime: Date 
+        type: Schema.ObjectId, ref: "Schedules"
      }],
      reviews:[{
-         ratings : Number,
-         comments: String
+        type: Schema.ObjectId, ref: "Reviews"
+            
      }],
 
 });
