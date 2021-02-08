@@ -50,7 +50,7 @@ router.get('/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
-// Update schedule by id
+// Update review by id
 router.put('/:id', (req, res) => {
     const { ratings, comments } = req.body;
 
@@ -65,7 +65,7 @@ router.put('/:id', (req, res) => {
 
 });
 
-// Delete schedule by id
+// Delete review by id
 router.delete('/:id', (req, res) => {
     reviewModel.deleteOne({_id: req.params.id}).exec()
         .then(res.json(`Review ${ req.params.id } successfully deleted`))
