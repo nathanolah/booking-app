@@ -8,8 +8,7 @@ mongoose.Promise=global.Promise;
 
 const scheduleModel=require('../models/scheduleSchema');
 
-// Add barber
-router.post('/', (req, res) => {
+router.post('/:id', (req, res) => {
     const { workDate, startTime, endTime } = req.body;
     //not sure about date
 
@@ -22,11 +21,16 @@ router.post('/', (req, res) => {
             if (err) {
                 res.json(err);
             } else {
-                res.json(`New schedule entered: ${ newSchedule._id }`);
+                barberModel.updateOne({_id: req.params.id}, {$push: {schedules: newSchedule}})
+                .then(res.json(`Barber ${ req.params.id } got new schedule`))
+                .catch(err => res.json(err));
+            
+                //res.json(`New schedule entered: ${ newSchedule._id }`);
             }
         });
     }
-
+   
+});
 });
 
 // Get all schedule 
