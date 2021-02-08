@@ -6,12 +6,13 @@ const barberModel = require('../models/barberSchema'); //not sure if needed
 const barberShopSchema = new Schema({
     barberShopName: String,
     phoneNumber: String,
+    address: String,
 
     barbers: [{        
         type: Schema.ObjectId, ref: "Barbers",
     }],
     barberShopQueue: [{ 
-        customerId: String
+        type: Schema.ObjectId, ref: "Customers"
     }],
 
     // barberID: { type: Number },
@@ -27,11 +28,12 @@ const barberShopSchema = new Schema({
 
 // Delete customer from queue
 barberShopSchema.statics.deleteCustomerFromQueue = (barberShopID, customer, res) => {
-    barberShopModel.updateOne({_id: barberShopID}, {$pull: {"barberShopQueue": {"customerId": customer.customerId}}}, {safe:true, multi:true}, function(err, obj) {
+    console.log(customer);
+    barberShopModel.updateOne({_id: barberShopID}, {$pull: {"barberShopQueue": customer.customerID}}, {safe:true, multi:true}, function(err, obj) {
         if (err) {
             res.json(err);
         } else {
-            res.json(`Customer: ${ customer.customerId } removed from queue`);
+            res.json(`Customer: ${ customer.customerID } removed from queue`);
         }
     }); 
 }
@@ -42,18 +44,20 @@ barberShopSchema.statics.addCustomerToQueue = (barberShopId, customer, res) => {
         if (err) {
             res.json(err);
         } else {
-            barberShop.barberShopQueue.push(customer);
+            let tempCustID = new mongoose.Types.ObjectId(customer.customerID)
+
+            barberShop.barberShopQueue.push(tempCustID);
             barberShop.save();
 
             // customer is the object that holds the customer's details
-            res.json(`Customer: ${ customer.customerId } was added to queue`);
+            res.json(`Customer: ${ customer.customerID } was added to queue`);
         }
     });
 }
 
 // Get all customers in queue
 barberShopSchema.statics.getBarberShopQueue = (barberShopId, res) => {
-    barberShopModel.findOne({_id: barberShopId})
+    barberShopModel.findOne({_id: barberShopId}).populate('barberShopQueue')
         .then(shop => { res.json(shop.barberShopQueue) })
         .catch(err => { res.json(err) });
 }
