@@ -9,7 +9,7 @@ mongoose.Promise=global.Promise;
 const reviewModel=require('../models/reviewSchema');
 
 
-router.post('/', (req, res) => {
+router.post('/:id', (req, res) => {
     const { ratings,  comments } = req.body;
 
     if (ratings== null) {//comments can be blank
@@ -21,12 +21,19 @@ router.post('/', (req, res) => {
             if (err) {
                 res.json(err);
             } else {
-                res.json(`New review: ${ newReview._id } was added to collection`);
+                barberModel.updateOne({_id: req.params.id}, {$push: {reviews: newReview}})
+            .then(res.json(`Barber ${ req.params.id } got new comment`))
+            .catch(err => res.json(err))}
+                //res.json(`New review: ${ newReview._id } was added to collection`);
             }
-        });
+        )
+            
+        
+       
     }
-
+    
 });
+
 
 // Get all review 
 //not sure about this route since review is connected to each barber.
