@@ -31,7 +31,7 @@ router.post('/:id', (req, res) => {
     }
    
 });
-});
+
 
 // Get all schedule 
 //not sure about this route since schedule is connected to each barber.
