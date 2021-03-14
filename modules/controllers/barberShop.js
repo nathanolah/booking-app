@@ -76,6 +76,12 @@ router.delete('/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
+// Add barber to shop
+router.put('/addBarber/:id', (req, res) => {
+    const {barbID} = req.body;
+    let tempBarbID = new mongoose.Types.ObjectId(barbID);
+    console.log(barbID);
+
 
 /* Routes that refer to the barbers of the shop */
 
