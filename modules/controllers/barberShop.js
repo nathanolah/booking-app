@@ -11,7 +11,6 @@ const barberShopModel = require('../models/barberShopSchema');
 
 // Add new barber shop
 router.post('/', (req, res) => {
-  
     const { barberShopName } = req.body;
 
     if (barberShopName.length == "") {
@@ -28,11 +27,25 @@ router.post('/', (req, res) => {
     }
 });
 
-// Get all barber shops
+// Get all barber shops or with query parameters for pagination (http://localhost:8080/api/barberShops?page=1&perPage=6)
 router.get('/', (req, res) => {
-    barberShopModel.find().exec()
-        .then(shops => res.json(shops))
-        .catch(err => res.json(err));
+    let page = req.query.page;
+    let perPage = req.query.perPage;
+
+    if (+page && +perPage) {
+        page = (+page - 1);
+        barberShopModel.find().skip(page * +perPage).limit(+perPage).exec()
+            .then(shops => {
+                res.json(shops)
+            })
+            .catch(err => res.json(err));
+    } else {
+        barberShopModel.find().exec()
+            .then(shops => res.json(shops))
+            .catch(err => res.json(err));
+
+    }
+    
 });
 
 // Get barber shop by id
@@ -64,6 +77,15 @@ router.delete('/:id', (req, res) => {
 });
 
 // Add barber to shop
+router.put('/addBarber/:id', (req, res) => {
+    const {barbID} = req.body;
+    let tempBarbID = new mongoose.Types.ObjectId(barbID);
+    console.log(barbID);
+
+
+/* Routes that refer to the barbers of the shop */
+
+/// Add barber to shop
 router.put('/addBarber/:id', (req, res) => {
     const {barbID} = req.body;
     let tempBarbID = new mongoose.Types.ObjectId(barbID);
