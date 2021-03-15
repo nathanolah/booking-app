@@ -27,30 +27,16 @@ router.post('/', (req, res) => {
     }
 });
 
-// Get all barber shops or with query parameters for pagination (http://localhost:8080/api/barberShops?page=1&perPage=6)
+// Get all barber shops
 router.get('/', (req, res) => {
-    let page = req.query.page;
-    let perPage = req.query.perPage;
-
-    if (+page && +perPage) {
-        page = (+page - 1);
-        barberShopModel.find().skip(page * +perPage).limit(+perPage).exec()
-            .then(shops => {
-                res.json(shops)
-            })
-            .catch(err => res.json(err));
-    } else {
-        barberShopModel.find().exec()
-            .then(shops => res.json(shops))
-            .catch(err => res.json(err));
-
-    }
-    
+    barberShopModel.find().populate('barberId').populate('customerId').exec()
+        .then(shops => res.json(shops))
+        .catch(err => res.json(err));
 });
 
 // Get barber shop by id
 router.get('/:id', (req, res) => {
-    barberShopModel.findOne({_id: req.params.id}).exec()
+    barberShopModel.findOne({_id: req.params.id}).populate('barberId').populate('customerId').exec()
         .then(shop => res.json(shop))
         .catch(err => res.json(err));
 
@@ -79,44 +65,14 @@ router.delete('/:id', (req, res) => {
 
 /* Routes that refer to the barbers of the shop */
 
-/// Add barber to shop
-router.put('/addBarber/:id', (req, res) => {
-    const {barbID} = req.body;
-    let tempBarbID = new mongoose.Types.ObjectId(barbID);
-    console.log(barbID);
-
-    barberShopModel.updateOne({_id: req.params.id}, {$push: {barbers: tempBarbID}})
-            .then(res.json(`Shop ${ req.params.id } successfully updated with new barber`))
-            .catch(err => res.json(err));
-});
+// Add barber to shop
 
 // Delete barber from shop
-router.put('/deleteBarber/:id', (req, res) => {
-    const {barbID} = req.body;
-    console.log(barbID);
 
-    barberShopModel.updateOne({_id: req.params.id}, {$pull: {"barbers":  barbID}}, function(err, obj) {
-        if (err) {
-            res.json(err);
-        } else {
-            res.json(`Barber: ${ barbID } removed from queue`);
-        }
-    }); 
-});
 // Get all barbers from shop
-router.get('/barbers/:id', (req, res) => {
-    barberShopModel.findOne({_id: req.params.id}).populate('barbers')
-        .then(shop => { res.json(shop.barbers) })
-        .catch(err => { res.json(err) })
-});
 
 // Get barber by id from shop
-router.get('/getOneBarber/:id', (req, res) => {
-    const {barbID} = req.body;
-    barberShopModel.findOne({_id: req.params.id}, {"barbers" : barbID}).populate('barbers')
-        .then(shop => { res.json(shop.barbers) })
-        .catch(err => { res.json(err) })
-});
+
 
 /* Barber Shop Queue Routes */
 

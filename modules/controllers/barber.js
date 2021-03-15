@@ -32,14 +32,14 @@ router.post('/', (req, res) => {
 
 // Get all barbers
 router.get('/', (req, res) => {
-    barberModel.find().exec()
+    barberModel.find().populate('reviewID').populate('scheduleID').exec()
         .then(barbers => res.json(barbers))
         .catch(err => res.json(err));
 });
 
 // Get barber by id
 router.get('/:id', (req, res) => {
-    barberModel.findOne({_id: req.params.id}).exec()
+    barberModel.findOne({_id: req.params.id}).populate('reviewID').populate('scheduleID').exec()
         .then(barbers => res.json(barbers))
         .catch(err => res.json(err));
 });
