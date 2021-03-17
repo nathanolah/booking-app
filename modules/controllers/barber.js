@@ -14,7 +14,7 @@ const barberModel = require('../models/barberSchema');
 router.post('/', (req, res) => {
     const { firstName, lastName } = req.body;
 
-    if (firstName == null || lastName == null || firstName.length == "" || lastName.length == "") {
+    if (firstName.length == "" || lastName.length == "") {
         res.json('You must enter a full name');
 
     } else {
@@ -48,7 +48,7 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
     const { firstName, lastName } = req.body;
 
-    if (firstName == null || lastName == null || firstName.length == "" || lastName.length == "") {
+    if (firstName.length == "" || lastName.length == "") {
         res.json('You must enter a full name');
 
     } else {
