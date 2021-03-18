@@ -162,7 +162,6 @@ router.post('/queue/:id', (req, res) => {
 
 });
 
-
 // Remove from barber shop queue by id
 router.put('/queue/:id', (req, res) => {
     // req.params.id is the id of the shop
@@ -175,6 +174,7 @@ router.put('/queue/:id', (req, res) => {
             res.json(`Customer: ${ req.body.email } removed from queue`);
         }
     });
+
 
 });
 

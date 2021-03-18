@@ -62,7 +62,7 @@ router.put('/:id', (req, res) => {
             .then(res.json(`customer ${ req.params.id } successfully updated`))
             .catch(err => res.json(err));
     }
-
 });
 
 module.exports = router;
+
