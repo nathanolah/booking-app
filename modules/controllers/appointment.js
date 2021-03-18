@@ -110,4 +110,10 @@ router.delete('/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
+router.get('/barbAppointments/:id', (req, res) => {
+    appointmentModel.find({barberID: req.params.id}).exec()
+        .then(appointment => res.json(appointment))
+        .catch(err => res.json(err));
+});
+
 module.exports = router;
