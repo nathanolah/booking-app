@@ -127,8 +127,7 @@ router.get('/getOneBarber/:id', (req, res) => {
 // Get barber shop queue by id
 router.get('/queue/:id', (req, res) => {
     //barberShopModel.getBarberShopQueue(req.params.id, res);
-    
-    barberShopModel.findOne({_id: req.params.id}).populate('barberShopQueue')
+    barberShopModel.findOne({_id: req.params.id})
         .then(shop => { res.json(shop.barberShopQueue) })
         .catch(err => { res.json(err) });
     
@@ -147,18 +146,13 @@ router.post('/queue/:id', (req, res) => {
         if (err) {
             res.json(err);
         } else {
-
-            //let tempCustID = new mongoose.Types.ObjectId(customer._id)
-        
-            let newCust = new customerModel(req.body);
-
-            barberShop.barberShopQueue.push(newCust);
+            barberShop.barberShopQueue.push(req.body);
             barberShop.save((err) => {
                 if (err) {
                     res.json(err);
                 } else {
                     // customer is the object that holds the customer's details
-                    res.json(`Customer: ${ newCust._id } was added to queue`);
+                    res.json(`Customer: ${ req.body.email } was added to queue`);
                 }
             });
 
@@ -168,34 +162,20 @@ router.post('/queue/:id', (req, res) => {
 
 });
 
-
-
 // Remove from barber shop queue by id
-router.delete('/queue/:id', (req, res) => {
+router.put('/queue/:id', (req, res) => {
     // req.params.id is the id of the shop
     // req.body contains the customer details
-    //barberShopModel.deleteCustomerFromQueue(req.params.id, req.body, res); 
+    //barberShopModel.deleteCustomerFromQueue(req.params.id, req.body, res);      
+    barberShopModel.updateOne({_id: req.params.id}, {$pull: {"barberShopQueue": req.body}}, {safe:true, multi:true}, function(err, obj) {
+        if (err) {
+            res.json(err);
+        } else {
+            res.json(`Customer: ${ req.body.email } removed from queue`);
+        }
+    });
 
-
-    // find the customer id of matching email
-    barberShopModel.findOne({_id: req.params.id}).populate('barberShopQueue')
-        .then(shop => { 
-            console.log('shop ' + shop.barberShopQueue);
-
-        })
-        .catch(err => { res.json(err) })
-
-         
-
-    // barberShopModel.updateOne({_id: req.params.id}, {$pull: {"barberShopQueue": req.body._id}}, {safe:true, multi:true}, function(err, obj) {
-    //     if (err) {
-    //         res.json(err);
-    //     } else {
-    //         res.json(`Customer: ${ req.body.email } removed from queue`);
-    //     }
-    // });
 
 });
-
 
 module.exports = router;
