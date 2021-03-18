@@ -111,7 +111,7 @@ router.delete('/:id', (req, res) => {
 });
 
 router.get('/barbAppointments/:id', (req, res) => {
-    appointmentModel.find({barberID: req.params.id}).exec()
+    appointmentModel.find({barberID: req.params.id}).populate('custID').populate('barberID').exec()
         .then(appointment => res.json(appointment))
         .catch(err => res.json(err));
 });
