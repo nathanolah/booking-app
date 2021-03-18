@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise; // Added to get around the deprecation warning: "Mongoose: promise (mongoose's default promise library) is deprecated"
 
 const barberShopModel = require('../models/barberShopSchema');
+const customerModel = require('../models/customerSchema');
 
 /* Shop Routes */
 
@@ -40,7 +41,7 @@ router.get('/', (req, res) => {
             })
             .catch(err => res.json(err));
     } else {
-        barberShopModel.find().exec()
+        barberShopModel.find().populate('barberId').populate('customerId').exec()
             .then(shops => res.json(shops))
             .catch(err => res.json(err));
 
@@ -50,7 +51,7 @@ router.get('/', (req, res) => {
 
 // Get barber shop by id
 router.get('/:id', (req, res) => {
-    barberShopModel.findOne({_id: req.params.id}).exec()
+    barberShopModel.findOne({_id: req.params.id}).populate('barberId').populate('customerId').exec()
         .then(shop => res.json(shop))
         .catch(err => res.json(err));
 
@@ -103,6 +104,7 @@ router.put('/deleteBarber/:id', (req, res) => {
         }
     }); 
 });
+
 // Get all barbers from shop
 router.get('/barbers/:id', (req, res) => {
     barberShopModel.findOne({_id: req.params.id}).populate('barbers')
@@ -118,24 +120,62 @@ router.get('/getOneBarber/:id', (req, res) => {
         .catch(err => { res.json(err) })
 });
 
+
+//////////////////////////////////////////
 /* Barber Shop Queue Routes */
 
 // Get barber shop queue by id
 router.get('/queue/:id', (req, res) => {
-    barberShopModel.getBarberShopQueue(req.params.id, res);
+    //barberShopModel.getBarberShopQueue(req.params.id, res);
+    barberShopModel.findOne({_id: req.params.id})
+        .then(shop => { res.json(shop.barberShopQueue) })
+        .catch(err => { res.json(err) });
+    
+});
+
+// Add a customer to the barber shop queue by id (Customer is not logged in) 
+router.post('/notLoggedIn/queue/:id', (req, res) => {
+    //barberShopModel.addNotLoggedInCustomerToQueue(req.params.id, req.body, res);
 });
 
 // Add customer to barber shop queue by id
 router.post('/queue/:id', (req, res) => {
-    barberShopModel.addCustomerToQueue(req.params.id, req.body, res);
+    //barberShopModel.addCustomerToQueue(req.params.id, req.body, res);
+
+    barberShopModel.findOne({_id: req.params.id}).exec((err, barberShop) => {
+        if (err) {
+            res.json(err);
+        } else {
+            barberShop.barberShopQueue.push(req.body);
+            barberShop.save((err) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    // customer is the object that holds the customer's details
+                    res.json(`Customer: ${ req.body.email } was added to queue`);
+                }
+            });
+
+        }
+    });
+
+
 });
+
 
 // Remove from barber shop queue by id
-router.delete('/queue/:id', (req, res) => {
+router.put('/queue/:id', (req, res) => {
     // req.params.id is the id of the shop
     // req.body contains the customer details
-    barberShopModel.deleteCustomerFromQueue(req.params.id, req.body, res); 
-});
+    //barberShopModel.deleteCustomerFromQueue(req.params.id, req.body, res);      
+    barberShopModel.updateOne({_id: req.params.id}, {$pull: {"barberShopQueue": req.body}}, {safe:true, multi:true}, function(err, obj) {
+        if (err) {
+            res.json(err);
+        } else {
+            res.json(`Customer: ${ req.body.email } removed from queue`);
+        }
+    });
 
+});
 
 module.exports = router;
