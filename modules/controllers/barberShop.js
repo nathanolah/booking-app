@@ -127,9 +127,26 @@ router.get('/getOneBarber/:id', (req, res) => {
 // Get barber shop queue by id
 router.get('/queue/:id', (req, res) => {
     //barberShopModel.getBarberShopQueue(req.params.id, res);
-    barberShopModel.findOne({_id: req.params.id})
-        .then(shop => { res.json(shop.barberShopQueue) })
-        .catch(err => { res.json(err) });
+    
+    //barberShopModel.findOne({_id: req.params.id})
+        //.then(shop => { res.json(shop.barberShopQueue) })
+        //.catch(err => { res.json(err) });
+    
+    let page = req.query.page;
+    let perPage = req.query.perPage;
+
+    if (+page && +perPage) {
+        page = (+page - 1);
+
+        barberShopModel.findOne({_id: req.params.id}).skip(page * +perPage).limit(+perPage).exec()
+            .then(shop => { res.json(shop.barberShopQueue) })
+            .catch(err => res.json(err));
+    } else {
+        barberShopModel.findOne({_id: req.params.id})
+            .then(shop => { res.json(shop.barberShopQueue) })
+            .catch(err => { res.json(err) });
+    }
+    
     
 });
 
