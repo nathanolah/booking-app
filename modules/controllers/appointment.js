@@ -5,12 +5,24 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise; // Added to get around the deprecation warning: "Mongoose: promise (mongoose's default promise library) is deprecated"
 
 const appointmentModel = require('../models/appointmentSchema');
+const customerModel = require('../models/customerSchema');
+
 
 router.post('/', (req, res) => {
     //const { date, custID , barberID } = req.body;
     const temp = req.body;
+    let tempemail = temp.email;
+    let tempid = "";
+    customerModel.findOne({email:tempemail}).then(customer => {
+        //console.log(customer._id);
+        tempid = customer._id;
+        //console.log (tempid);
+    
+    //console.log (tempid);
+    
     //adding customer and barber IDs to appointment
-    let custID = new mongoose.Types.ObjectId(temp.custID);
+    //let custID = new mongoose.Types.ObjectId(temp.custID);
+    let custID = new mongoose.Types.ObjectId(tempid);
     let barbID = new mongoose.Types.ObjectId(temp.barberID);
     //adding date to appointment 
     let dateStr = temp.date.split(" ");
@@ -53,7 +65,7 @@ router.post('/', (req, res) => {
             })        
 
   
-
+        } );
 });
 
 router.get('/:id', (req, res) => {
