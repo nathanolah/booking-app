@@ -125,7 +125,7 @@ router.get('/getOneBarber/:id', (req, res) => {
 /* Barber Shop Queue Routes */
 
 // Get barber shop queue by id
-router.get('/queue/:id', (req, res) => {
+router.get('/queue/:id/', (req, res) => {
     //barberShopModel.getBarberShopQueue(req.params.id, res);
     
     //barberShopModel.findOne({_id: req.params.id})
