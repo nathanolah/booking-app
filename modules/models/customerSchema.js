@@ -12,6 +12,10 @@ const customerSchema = new Schema({
         required: true,
         length: 50
     },
+    password:{
+        type: String,
+        required:true
+    },
     phoneNumber: {
         type: String,
         required: true,

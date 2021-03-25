@@ -6,35 +6,24 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const session = require('express-session');
-
-// Stores the session in the database
-const MongoStore = require('connect-mongo')(session);
 
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
 
 //connection string if needed
-//const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`; 
+const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/BookingTesting?retryWrites=true&w=majority`; 
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(session({
-    secret: `${process.env.SESSION_KEY}`,
-    resave: false,
-    saveUninitialized: true, 
-    // cookie: { secure: true },
-
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
-    cookie: { maxAge: 180 * 80 * 1000 }
-}));
 
 const HTTP_PORT = process.env.PORT || 8080;
 
 const barberController = require('./modules/controllers/barber');
 const accountController = require('./modules/controllers/account');
+const accountsController = require('./modules/controllers/accounts');
+
 const barberShopController = require('./modules/controllers/barberShop');
 const customerController = require('./modules/controllers/customer');
 const appointmentController = require('./modules/controllers/appointment');
@@ -49,9 +38,10 @@ app.use('/api/customers', customerController);
 app.use('/api/appointments', appointmentController);
 app.use('/api/schedules', scheduleController);
 app.use('/api/reviews', reviewController);
+app.use('/api/testingaccounts', accountsController);
 
-// Promise operation asynchronous 
-mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+// Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
+mongoose.connect(connectionString/*process.env.MONGO_DB_URL*/, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`Connected to mongoDB`); // If promise is fulfilled
     })
