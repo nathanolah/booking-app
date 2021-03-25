@@ -6,10 +6,10 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const session = require('express-session');
+//const session = require('express-session');
 
 // Stores the session in the database
-const MongoStore = require('connect-mongo')(session);
+//const MongoStore = require('connect-mongo')(session);
 
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
@@ -21,15 +21,15 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(session({
-    secret: `${process.env.SESSION_KEY}`,
-    resave: false,
-    saveUninitialized: true, 
-    // cookie: { secure: true },
+// app.use(session({
+//     secret: `${process.env.SESSION_KEY}`,
+//     resave: false,
+//     saveUninitialized: true, 
+//     // cookie: { secure: true },
 
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
-    cookie: { maxAge: 180 * 80 * 1000 }
-}));
+//     store: new MongoStore({ mongooseConnection: mongoose.connection }),
+//     cookie: { maxAge: 180 * 80 * 1000 }
+// }));
 
 const HTTP_PORT = process.env.PORT || 8080;
 
@@ -62,6 +62,7 @@ mongoose.set('useCreateIndex', true);
 app.listen(HTTP_PORT, () => {
     console.log(`Server listening on: ${ HTTP_PORT }`);
 });
+
 
 
 
