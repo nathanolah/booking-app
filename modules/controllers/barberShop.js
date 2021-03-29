@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
             })
             .catch(err => res.json(err));
     } else {
-        barberShopModel.find().populate('barberId').populate('customerId').exec()
+        barberShopModel.find().populate('barbers').populate('customerId').exec()
             .then(shops => res.json(shops))
             .catch(err => res.json(err));
 
