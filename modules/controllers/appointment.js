@@ -128,4 +128,18 @@ router.get('/barbAppointments/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
+router.get('/barbAppointmentsToday/:id', (req, res) => {
+    let tempDateStart = new Date(new Date().setHours(0,0,0));
+    let currentDateStart = new Date(tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000));
+    let tempDateEnd = new Date(new Date().setHours(23,59,59));
+    let currentDateEnd = new Date (tempDateEnd.getTime() - Math.abs(tempDateEnd.getTimezoneOffset()*-60000));    
+    appointmentModel.find({$and: [{barberID: req.params.id,  startDate: {
+        
+        $lt: currentDateEnd,
+        $gte: currentDateStart
+    }}]}).populate('custID').populate('barberID').exec()
+        .then(appointment => res.json(appointment))
+        .catch(err => res.json(err));
+});
+
 module.exports = router;
