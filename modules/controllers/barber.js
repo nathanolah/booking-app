@@ -195,7 +195,7 @@ router.get('/', (req, res) => {
 
 // Get barber by id
 router.get('/:id', (req, res) => {
-    barberModel.findOne({_id: req.params.id}).populate('reviewID').populate('scheduleID').exec()
+    barberModel.findOne({_id: req.params.id}).populate('reviews').populate('schedules').exec()
         .then(barbers => res.json(barbers))
         .catch(err => res.json(err));
 });
