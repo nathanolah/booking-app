@@ -7,6 +7,7 @@ mongoose.Promise=global.Promise;
 
 
 const scheduleModel=require('../models/scheduleSchema');
+const barberModel = require('../models/barberSchema');
 
 
 // Add barber
