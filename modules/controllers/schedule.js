@@ -14,6 +14,7 @@ const barberModel = require('../models/barberSchema');
 router.post('/:id', (req, res) => {
     const { workDay, startTime, endTime } = req.body;
     //not sure about date
+    console.log(workDay);
 
     if (workDay ==null || startTime == null || endTime == null) {
         res.json('You must enter the working date with start and end time');
@@ -44,13 +45,18 @@ router.post('/:id', (req, res) => {
               day = "Saturday";
           }
 
-        var schedule={
-            workDay:day,
-            startTime:req.body.startTime,
-            endTime:req.body.endTime
-        }
+        
+            let tempWorkDay = day;            
+            let tempStartTime = req.body.startTime;
+            let tempEndTime = req.body.endTime;
+      
+        
 
-        let newSchedule = new scheduleModel(schedule);
+        let newSchedule = new scheduleModel();
+        newSchedule.workDate = tempWorkDay;
+        newSchedule.startTime = tempStartTime;
+        newSchedule.endTime = tempEndTime;
+
         newSchedule.save((err) => {
             if (err) {
                 res.json(err);
@@ -111,7 +117,7 @@ router.put('/:id', (req, res) => {
               day = "Saturday";
           };
           var newSc={
-            workDay:day,
+            workDate:day,
             startTime:req.body.startTime,
             endTime:req.body.endTime
           }
