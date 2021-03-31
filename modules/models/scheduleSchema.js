@@ -3,9 +3,9 @@ let Schema = mongoose.Schema;
 
 const scheduleSchema = new Schema({
   
-    workDate: Date, //monday to sunday
-    startTime: Date, //usage - start time set
-    endTime: Date //usage - end time set
+    workDate: String, //monday to sunday
+    startTime: String, //usage - start time set
+    endTime: String //usage - end time set
 
 
 });
