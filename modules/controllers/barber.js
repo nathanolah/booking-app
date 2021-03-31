@@ -188,7 +188,7 @@ router.post('/:id', (req, res) => {
 
 // Get all barbers
 router.get('/', (req, res) => {
-    barberModel.find().populate('reviewID').populate('scheduleID').exec()
+    barberModel.find().populate('reviews').populate('schedules').exec()
         .then(barbers => res.json(barbers))
         .catch(err => res.json(err));
 });
