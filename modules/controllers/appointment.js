@@ -142,12 +142,14 @@ router.get('/barbAppointmentsToday/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
-router.get('/barbAppointmentsTargetDay/:id', (req, res) => {
+router.get('/barbAppointmentsTargetDay/:id/:year/:month/:day', (req, res) => {
 
-    let tempDateStart = new Date(req.body.year, req.body.month, req.body.day, 0, 0, 0);
+    let tempDateStart = new Date(req.params.year, req.params.month, req.params.day, 0, 0, 0);
     let currentDateStart = new Date(tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000));
-    let tempDateEnd = new Date(req.body.year, req.body.month, req.body.day, 23, 59, 59);
-    let currentDateEnd = new Date (tempDateEnd.getTime() - Math.abs(tempDateEnd.getTimezoneOffset()*-60000));    
+    console.log(currentDateStart)
+    let tempDateEnd = new Date(req.params.year, req.params.month, req.params.day, 23, 59, 59);
+    let currentDateEnd = new Date (tempDateEnd.getTime() - Math.abs(tempDateEnd.getTimezoneOffset()*-60000));
+    console.log(currentDateEnd)    
     appointmentModel.find({$and: [{barberID: req.params.id,  startDate: {
         
         $lt: currentDateEnd,
