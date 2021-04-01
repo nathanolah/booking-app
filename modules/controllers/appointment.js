@@ -91,7 +91,7 @@ router.put('/:id', (req, res) => {
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
     
     let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000)) //removing utc offset
-    let realDateEnd = new Date(realDateStart.getTime() + 45*60000)    
+    let realDateEnd = new Date(realDateStart.getTime() + 44*60000)    
     
 
     appointmentModel.countDocuments({ 
