@@ -202,15 +202,32 @@ router.get('/:id', (req, res) => {
 
 // Update barber by id
 router.put('/:id', (req, res) => {
-    const { firstName, lastName } = req.body;
+    const { firstName, lastName, phoneNumber, password, cpassword } = req.body;
 
     if (firstName.length == "" || lastName.length == "") {
         res.json('You must enter a full name');
 
-    } else {
-        barberModel.updateOne({_id: req.params.id}, {$set: req.body})
+    }else if(phoneNumber == null || phoneNumber.length == ""){
+        res.json("Please enter a valid phone number")
+    } else if(password == null || password.length == ""){
+        res.json("Please enter a password")
+    }else if(cpassword == null || cpassword.length == ""){
+        res.json("Please enter a confirm password");
+    }else if(password != cpassword){
+        res.json("Password and confirm password not same")
+    }
+    
+    
+    
+    
+    else {
+        crypt.hash(password, 10).then(hash=>{ // Hash the password using a Salt that was generated using 10 rounds
+                
+            req.body.password = hash;
+            barberModel.updateOne({_id: req.params.id}, {$set: req.body})
             .then(res.json(`Barber ${ req.params.id } successfully updated`))
             .catch(err => res.json(err));
+        });
     }
 
 });
