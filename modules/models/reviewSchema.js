@@ -5,7 +5,7 @@ const reviewSchema = new Schema({
     
     ratings: Number,
     comments: String,
-    valid:{type:Boolean, default:false},
+    valid:{type:String, default:"Submit"},
     author: {
         type: Schema.ObjectId, ref: "Customers",
         required: true        
