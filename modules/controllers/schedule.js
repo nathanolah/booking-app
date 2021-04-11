@@ -45,7 +45,7 @@ router.post('/:id', (req, res) => {
               day = "Saturday";
           }
 
-        
+        console.log(day);
             let tempWorkDay = day;            
             let tempStartTime = req.body.startTime;
             let tempEndTime = req.body.endTime;
@@ -56,6 +56,8 @@ router.post('/:id', (req, res) => {
         newSchedule.workDate = tempWorkDay;
         newSchedule.startTime = tempStartTime;
         newSchedule.endTime = tempEndTime;
+
+        console.log(newSchedule.workDate);
 
         newSchedule.save((err) => {
             if (err) {
@@ -116,11 +118,21 @@ router.put('/:id', (req, res) => {
             case 6:
               day = "Saturday";
           };
-          var newSc={
-            workDate:day,
-            startTime:req.body.startTime,
-            endTime:req.body.endTime
-          }
+
+          console.log(day);
+          let tempWorkDay = day;            
+          let tempStartTime = req.body.startTime;
+          let tempEndTime = req.body.endTime;
+    
+      
+
+      let newSchedule = new scheduleModel();
+      newSchedule.workDate = tempWorkDay;
+      newSchedule.startTime = tempStartTime;
+      newSchedule.endTime = tempEndTime;
+
+      console.log(newSchedule.workDate);
+
 
 
         scheduleModel.updateOne({_id: req.params.id}, {$set: newSc})

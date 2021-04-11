@@ -89,8 +89,8 @@ router.put('/:id', (req, res) => {
     //adding date to appointment 
     let dateStr = temp.date.split(" ");
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
-    
-    let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000)) //removing utc offset
+    //- Math.abs(tempDateStart.getTimezoneOffset()*-60000)
+    let realDateStart = new Date( tempDateStart.getTime() ) //removing utc offset
     let realDateEnd = new Date(realDateStart.getTime() + 44*60000)    
     
 
@@ -124,6 +124,12 @@ router.delete('/:id', (req, res) => {
 
 router.get('/barbAppointments/:id', (req, res) => {
     appointmentModel.find({barberID: req.params.id}).populate('custID').populate('barberID').exec()
+        .then(appointment => res.json(appointment))
+        .catch(err => res.json(err));
+});
+
+router.get('/custAppointments/:id', (req, res) => {
+    appointmentModel.find({custID: req.params.id}).populate('custID').populate('barberID').exec()
         .then(appointment => res.json(appointment))
         .catch(err => res.json(err));
 });
