@@ -8,7 +8,7 @@ const barberShopSchema = new Schema({
     barberShopName: String,
     phoneNumber: String,
     address: String,
-
+    manager: String,
     barbers: [{        
         type: Schema.ObjectId, ref: "Barbers",
     }],

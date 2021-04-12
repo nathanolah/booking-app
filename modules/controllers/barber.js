@@ -105,7 +105,7 @@ router.post('/login', (req, res)=>{
     }
 
 });
-
+ 
 
 // Add barber
 router.post('/:id', (req, res) => {
