@@ -24,7 +24,7 @@ const HTTP_PORT = process.env.PORT || 8080;
 
 const barberController = require('./modules/controllers/barber');
 const accountController = require('./modules/controllers/account');
-const accountsController = require('./modules/controllers/accounts');
+
 
 const barberShopController = require('./modules/controllers/barberShop');
 const customerController = require('./modules/controllers/customer');
@@ -40,7 +40,7 @@ app.use('/api/customers', customerController);
 app.use('/api/appointments', appointmentController);
 app.use('/api/schedules', scheduleController);
 app.use('/api/reviews', reviewController);
-app.use('/api/testingaccounts', accountsController);
+
 
 
 var ExtractJwt = passportJWT.ExtractJwt;
