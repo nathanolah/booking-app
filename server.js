@@ -1,40 +1,31 @@
 // Rest API 
 // Entry point file
 // server.js
-
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-//const session = require('express-session');
-
-// Stores the session in the database
-//const MongoStore = require('connect-mongo')(session);
-
+const bcrypt = require('bcryptjs')
+const passport = require("passport");
+const passportJWT = require("passport-jwt");
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
 
 //connection string if needed
-//const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`; 
+const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`;
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-// app.use(session({
-//     secret: `${process.env.SESSION_KEY}`,
-//     resave: false,
-//     saveUninitialized: true, 
-//     // cookie: { secure: true },
-
-//     store: new MongoStore({ mongooseConnection: mongoose.connection }),
-//     cookie: { maxAge: 180 * 80 * 1000 }
-// }));
 
 const HTTP_PORT = process.env.PORT || 8080;
 
 const barberController = require('./modules/controllers/barber');
 const accountController = require('./modules/controllers/account');
+const accountsController = require('./modules/controllers/accounts');
+
 const barberShopController = require('./modules/controllers/barberShop');
 const customerController = require('./modules/controllers/customer');
 const appointmentController = require('./modules/controllers/appointment');
@@ -49,84 +40,95 @@ app.use('/api/customers', customerController);
 app.use('/api/appointments', appointmentController);
 app.use('/api/schedules', scheduleController);
 app.use('/api/reviews', reviewController);
+app.use('/api/testingaccounts', accountsController);
 
-// Promise operation asynchronous 
-mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log(`Connected to mongoDB`); // If promise is fulfilled
-    })
-    .catch(err => console.log(`Error ${ err }`)); // If the promise is rejected
-mongoose.set('useCreateIndex', true);
 
-/** Initialize the database service and start the server **/ 
-app.listen(HTTP_PORT, () => {
-    console.log(`Server listening on: ${ HTTP_PORT }`);
+var ExtractJwt = passportJWT.ExtractJwt;
+var JwtStrategy = passportJWT.Strategy;
+
+var jwtOptions = {};
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
+
+jwtOptions.secretOrKey = '&0y7$noP#5rt99&GB%Pz7j2b1vkzaB0RKs%^N^0zOP89NT04mPuaM!&G8cbNZOtH';
+
+var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
+
+    if (jwt_payload) {
+        next(null, {
+            _id: jwt_payload._id,
+
+            role: jwt_payload.role
+        });
+    } else {
+        next(null, false);
+    }
+
+});
+
+passport.use(strategy);
+app.use(passport.initialize());
+app.use(bodyParser.json());
+app.use(cors());
+
+var administrator = {
+    id : "Admin",
+    password : "Tt123^^"
+
+
+}
+bcrypt.hash(administrator.password, 10).then(hash => { // Hash the password using a Salt that was generated using 10 rounds
+    administrator.password = hash;
 });
 
 
 
 
-// // Rest API 
-// // Entry point file
-// // server.js
+// Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
+mongoose.connect(connectionString/*process.env.MONGO_DB_URL*/, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log(`Connected to mongoDB`); // If promise is fulfilled
+    })
+    .catch(err => console.log(`Error ${err}`)); // If the promise is rejected
+mongoose.set('useCreateIndex', true);
 
-// const express = require('express');
-// const cors = require('cors');
-// const bodyParser = require('body-parser');
-// const mongoose = require('mongoose');
-// const session = require('express-session');
+/** Initialize the database service and start the server **/
+app.listen(HTTP_PORT, () => {
+    console.log(`Server listening on: ${HTTP_PORT}`);
+});
 
-// // Stores the session in the database
-// const MongoStore = require('connect-mongo')(session);
+app.post('/admin', (req, res) => {
 
-// // Load the environment file
-// require('dotenv').config({ path: "./config/keys.env" });
+    if (!req.body.id) {
+        res.json('You must enter an id');
+    }
+    else if (!req.body.password) {
+        res.json('You must enter a password');
+    }
+    else if (req.body.id != administrator.id) {
+        res.json('Id it not correct')
+    } else {
 
-// //connection string if needed
-// //const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`; 
 
-// const app = express();
+        bcrypt.compare(req.body.password, administrator.password)
+            .then((isMatched) => {
+                if (isMatched) {
 
-// app.use(cors());
-// app.use(bodyParser.json());
-// app.use(session({
-//     secret: `${process.env.SESSION_KEY}`,
-//     resave: false,
-//     saveUninitialized: true, 
-//     // cookie: { secure: true },
+                    //CREATE A SESSION FOR THIS ACCOUNT
+                    var payload = {
+                        _id: "Admin",
 
-//     store: new MongoStore({ mongooseConnection: mongoose.connection }),
-//     cookie: { maxAge: 180 * 80 * 1000 }
-// }));
+                        role: "Admin"
+                    };
+                    var token = jwt.sign(payload, jwtOptions.secretOrKey);
+                    res.json({ "message": "login succeesful", "token": token });
 
-// const HTTP_PORT = process.env.PORT || 8080;
+                } else {
 
-// const barberController = require('./modules/controllers/barber');
-// const accountController = require('./modules/controllers/account');
-// const barberShopController = require('./modules/controllers/barberShop');
-// const customerController = require('./modules/controllers/customer');
-// const appointmentController = require('./modules/controllers/appointment');
-// const scheduleController = require('./modules/controllers/schedule');
-// const reviewController = require('./modules/controllers/review');
+                    res.json(`Sorry, your id and/or password is incorrect`);
+                }
 
-// // Controllers
-// app.use('/api/barbers', barberController);
-// app.use('/api/accounts', accountController);
-// app.use('/api/barberShops', barberShopController);
-// app.use('/api/customers', customerController);
-// app.use('/api/appointments', appointmentController);
-// app.use('/api/schedules', scheduleController);
-// app.use('/api/reviews', reviewController);
+            }).catch(err => res.json(err));;
+    }
+});
+           
 
-// // Promise operation asynchronous 
-// mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-//     .then(() => {
-//         console.log(`Connected to mongoDB`); // If promise is fulfilled
-//     })
-//     .catch(err => console.log(`Error ${ err }`)); // If the promise is rejected
-// mongoose.set('useCreateIndex', true);
-
-// /** Initialize the database service and start the server **/ 
-// app.listen(HTTP_PORT, () => {
-//     console.log(`Server listening on: ${ HTTP_PORT }`);
-// });

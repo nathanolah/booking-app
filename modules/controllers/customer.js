@@ -203,7 +203,7 @@ router.post('/login', (req, res)=>{
                                     email:customer.email,
                                     firstName:customer.firstName,
                                     lastName:customer.lastName,
-                                    role:"customer"
+                                    role:"Customer"
                                 };
                                 var token =jwt.sign(payload, jwtOptions.secretOrKey);
                                 res.json({"message" : "login succeesful", "token" : token});

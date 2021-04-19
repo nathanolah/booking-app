@@ -51,7 +51,7 @@ router.get('/', (req, res) => {
 
 // Get barber shop by id
 router.get('/:id', (req, res) => {
-    barberShopModel.findOne({_id: req.params.id}).populate('barbers').populate('customerId').exec()
+    barberShopModel.findOne({_id: req.params.id}).populate('barbers').exec()
         .then(shop => res.json(shop))
         .catch(err => res.json(err));
 
