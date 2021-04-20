@@ -64,6 +64,14 @@ router.get('/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
+router.get('/author/:id', (req,res)=>{
+
+
+    reviewModel.find({author:req.params.id}).exec()
+    .then(reviews=>res.json(reviews))
+    .catch(err => res.json(err));
+})
+
 // Update schedule by id
 router.put('/:id', (req, res) => {
     const { ratings, comments, valid } = req.body;

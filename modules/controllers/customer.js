@@ -218,6 +218,15 @@ router.post('/login', (req, res)=>{
             .catch(err => res.json(err));
     }
 
+   
+
+});
+
+
+router.delete('/:id/', (req, res) => {
+    customerModel.deleteOne({ _id: req.params.id }).exec()
+    .then(res.json('Your account will be removed'))
+   .catch(err => res.json(err));
 });
 
 module.exports = router;
