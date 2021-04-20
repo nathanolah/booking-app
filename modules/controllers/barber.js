@@ -269,7 +269,15 @@ router.put('/:shop/:id/:manage', (req, res) => {
 // Delete barber by id
 router.delete('/:id/:shop', (req, res) => {
     barberModel.deleteOne({ _id: req.params.id }).exec()
-        .then(res.json(`Barber ${req.params.id} successfully deleted`))
+    .then((success)=>{
+
+            barberShopModel.updateOne({_id:req.params.shop}, {$pull: {barbers:req.params.id}})
+            .then(res.json('barber removed from the shop'))
+            
+
+        })
+            
+            
         .catch(err => res.json(err));
 });
 

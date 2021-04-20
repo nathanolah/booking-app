@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
     
     let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000)) //removing utc offset
-    let realDateEnd = new Date(realDateStart.getTime() + 45*60000)    
+    let realDateEnd = new Date(realDateStart.getTime() + 44*60000)    
     
     let isActiveTemp = true;    
     
@@ -89,8 +89,8 @@ router.put('/:id', (req, res) => {
     //adding date to appointment 
     let dateStr = temp.date.split(" ");
     let tempDateStart = new Date(dateStr[0], dateStr[1], dateStr[2], dateStr[3], dateStr[4]);
-    
-    let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000)) //removing utc offset
+    //
+    let realDateStart = new Date( tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000) ) //removing utc offset
     let realDateEnd = new Date(realDateStart.getTime() + 44*60000)    
     
 
@@ -128,6 +128,12 @@ router.get('/barbAppointments/:id', (req, res) => {
         .catch(err => res.json(err));
 });
 
+router.get('/custAppointments/:id', (req, res) => {
+    appointmentModel.find({custID: req.params.id}).populate('custID').populate('barberID').exec()
+        .then(appointment => res.json(appointment))
+        .catch(err => res.json(err));
+});
+
 router.get('/barbAppointmentsToday/:id', (req, res) => {
     let tempDateStart = new Date(new Date().setHours(0,0,0));
     let currentDateStart = new Date(tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000));
@@ -145,10 +151,12 @@ router.get('/barbAppointmentsToday/:id', (req, res) => {
 router.get('/barbAppointmentsTargetDay/:id/:year/:month/:day', (req, res) => {
 
     let tempDateStart = new Date(req.params.year, req.params.month, req.params.day, 0, 0, 0);
-    let currentDateStart = new Date(tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000));
+    //
+    let currentDateStart = new Date(tempDateStart.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000) );
     console.log(currentDateStart)
     let tempDateEnd = new Date(req.params.year, req.params.month, req.params.day, 23, 59, 59);
-    let currentDateEnd = new Date (tempDateEnd.getTime() - Math.abs(tempDateEnd.getTimezoneOffset()*-60000));
+    //- Math.abs(tempDateEnd.getTimezoneOffset()*-60000)
+    let currentDateEnd = new Date (tempDateEnd.getTime() - Math.abs(tempDateStart.getTimezoneOffset()*-60000));
     console.log(currentDateEnd)    
     appointmentModel.find({$and: [{barberID: req.params.id,  startDate: {
         
