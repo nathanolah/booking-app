@@ -12,8 +12,8 @@ const passportJWT = require("passport-jwt");
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
 
-//connection string if needed
-const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`;
+//connection string if needed (REMOVE THIS)
+//const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`;
 
 const app = express();
 
@@ -23,9 +23,6 @@ app.use(bodyParser.json());
 const HTTP_PORT = process.env.PORT || 8080;
 
 const barberController = require('./modules/controllers/barber');
-const accountController = require('./modules/controllers/account');
-
-
 const barberShopController = require('./modules/controllers/barberShop');
 const customerController = require('./modules/controllers/customer');
 const appointmentController = require('./modules/controllers/appointment');
@@ -34,13 +31,11 @@ const reviewController = require('./modules/controllers/review');
 
 // Controllers
 app.use('/api/barbers', barberController);
-app.use('/api/accounts', accountController);
 app.use('/api/barberShops', barberShopController);
 app.use('/api/customers', customerController);
 app.use('/api/appointments', appointmentController);
 app.use('/api/schedules', scheduleController);
 app.use('/api/reviews', reviewController);
-
 
 
 var ExtractJwt = passportJWT.ExtractJwt;
@@ -49,7 +44,10 @@ var JwtStrategy = passportJWT.Strategy;
 var jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
 
-jwtOptions.secretOrKey = '&0y7$noP#5rt99&GB%Pz7j2b1vkzaB0RKs%^N^0zOP89NT04mPuaM!&G8cbNZOtH';
+// REMOVE THIS
+//jwtOptions.secretOrKey = '&0y7$noP#5rt99&GB%Pz7j2b1vkzaB0RKs%^N^0zOP89NT04mPuaM!&G8cbNZOtH';
+
+jwtOptions.secretOrKey = process.env.JWT_SECRET_OR_KEY;
 
 var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
 
@@ -71,9 +69,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 var administrator = {
-    id : "Admin",
-    password : "Tt123^^"
-
+    // id : "Admin",
+    // password : "Tt123^^"
+    id : process.env.ADMIN_ID,
+    password : process.env.ADMIN_PASS
 
 }
 bcrypt.hash(administrator.password, 10).then(hash => { // Hash the password using a Salt that was generated using 10 rounds
@@ -81,10 +80,8 @@ bcrypt.hash(administrator.password, 10).then(hash => { // Hash the password usin
 });
 
 
-
-
-// Promise operation asynchronous // REPLACE myData with process.env.MONGO_DB_URL
-mongoose.connect(connectionString/*process.env.MONGO_DB_URL*/, { useNewUrlParser: true, useUnifiedTopology: true })
+// Promise operation asynchronous 
+mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`Connected to mongoDB`); // If promise is fulfilled
     })
@@ -96,6 +93,7 @@ app.listen(HTTP_PORT, () => {
     console.log(`Server listening on: ${HTTP_PORT}`);
 });
 
+// Admin Route
 app.post('/admin', (req, res) => {
 
     if (!req.body.id) {
