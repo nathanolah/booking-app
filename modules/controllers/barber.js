@@ -267,7 +267,7 @@ router.put('/:shop/:id/:manage', (req, res) => {
 })
 
 // Delete barber by id
-router.delete('/:id', (req, res) => {
+router.delete('/:id/:shop', (req, res) => {
     barberModel.deleteOne({ _id: req.params.id }).exec()
         .then(res.json(`Barber ${req.params.id} successfully deleted`))
         .catch(err => res.json(err));
