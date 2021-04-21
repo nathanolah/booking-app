@@ -12,8 +12,6 @@ const passportJWT = require("passport-jwt");
 // Load the environment file
 require('dotenv').config({ path: "./config/keys.env" });
 
-//connection string if needed (REMOVE THIS)
-//const connectionString = `mongodb+srv://groupone:group1prj@cluster0.w4a97.mongodb.net/booking-app?retryWrites=true&w=majority`;
 
 const app = express();
 
@@ -44,9 +42,6 @@ var JwtStrategy = passportJWT.Strategy;
 var jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
 
-// REMOVE THIS
-//jwtOptions.secretOrKey = '&0y7$noP#5rt99&GB%Pz7j2b1vkzaB0RKs%^N^0zOP89NT04mPuaM!&G8cbNZOtH';
-
 jwtOptions.secretOrKey = process.env.JWT_SECRET_OR_KEY;
 
 var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
@@ -69,8 +64,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 var administrator = {
-    // id : "Admin",
-    // password : "Tt123^^"
+    
     id : process.env.ADMIN_ID,
     password : process.env.ADMIN_PASS
 
