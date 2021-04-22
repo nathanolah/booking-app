@@ -134,11 +134,11 @@ router.put('/:id', (req, res) => {
       console.log(newSchedule.workDate);
 
 
-
-        scheduleModel.updateOne({_id: req.params.id}, {$set: newSc})
+      
+        scheduleModel.updateOne({_id: req.params.id}, {$set: newSchedule})
             .then(res.json(`Schedule ${ req.params.id } successfully updated`))
             .catch(err => res.json(err));
-    }
+    };
 
 });
 
