@@ -136,7 +136,7 @@ router.put('/:id', (req, res) => {
 
 
       
-        scheduleModel.updateOne({_id: req.params.id}, {$set: {"workDate:":newSchedule.workDate}, $set:{"startTime":newSchedule.startTime}, $set:{"endTime":newSchedule.endTime}})
+        scheduleModel.updateOne({_id: req.params.id}, {$set:{"endTime":newSchedule.endTime, "startTime":newSchedule.startTime, "workDate":newSchedule.workDate}})
             .then(res.json(`Schedule ${ req.params.id } successfully updated`))
             .catch(err => res.json(err));
     };
