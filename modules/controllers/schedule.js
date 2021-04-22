@@ -93,6 +93,7 @@ router.put('/:id', (req, res) => {
 
     if (workDay ==null || startTime == null || endTime== null) {
         res.json('You must put the date with start and end time to update schedule');
+        console.log("test?");
 
     } else {
         var day;
@@ -135,7 +136,7 @@ router.put('/:id', (req, res) => {
 
 
       
-        scheduleModel.updateOne({_id: req.params.id}, {$set: newSchedule})
+        scheduleModel.updateOne({_id: req.params.id}, {$set: {"workDate:":newSchedule.workDate}, $set:{"startTime":newSchedule.startTime}, $set:{"endTime":newSchedule.endTime}})
             .then(res.json(`Schedule ${ req.params.id } successfully updated`))
             .catch(err => res.json(err));
     };
